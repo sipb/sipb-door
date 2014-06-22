@@ -38,16 +38,16 @@ $(document).ready(function() {
     }
 
     updateHours = function(day, opened, closed) {
-      var hourClosed, hourOpened, i, _j, _results;
-      hourOpened = Math.floor(opened / hourSeconds);
-      hourClosed = Math.floor(closed / hourSeconds);
+      var i, _j, _results;
+      var hourOpened = Math.floor(opened / hourSeconds);
+      var hourClosed = Math.floor(closed / hourSeconds);
       opened = opened - hourOpened * hourSeconds;
       closed = closed - hourClosed * hourSeconds;
 
       if (hourOpened === hourClosed) {
         day[hourOpened] += (opened - closed) / hourSeconds;
       } else {
-        for (i = _j = hourOpened; hourOpened <= hourClosed ? _j <= hourClosed : _j >= hourClosed; i = hourOpened <= hourClosed ? ++_j : --_j) {
+        for (i = _j = hourOpened; _j <= hourClosed; i = ++_j) {
           switch (i) {
             case hourOpened:
               day[i] += (hourSeconds - opened) / hourSeconds;
@@ -74,10 +74,9 @@ $(document).ready(function() {
       }), dayOpened = _ref1[0], dayClosed = _ref1[1];
 
       if (daysPassed[0] === daysPassed[1]) {
-        console.log("hi");
         updateHours(freq[dayMap[dayOpened]], residueOpened, residueClosed);
       } else {
-        for (i = _k = dayOpened; dayOpened <= dayClosed ? _k <= dayClosed : _k >= dayClosed; i = dayOpened <= dayClosed ? ++_k : --_k) {
+        for (i = dayOpened; dayOpened < dayClosed ? i <= dayClosed : i >= dayClosed; dayOpened < dayClosed ? ++i : --i) {
           day = freq[dayMap[i]];
           switch (i) {
             case dayOpened:
@@ -95,10 +94,20 @@ $(document).ready(function() {
       } 
     }
 
+
+    // Display stuff here
     svgContainer = d3.select("body").append("svg")
         .attr("width", 800)
         .attr("height", 580)
         .style("border", "1px solid #ccc");
+
+    for (i = _l = 0; _l <= 23; i = ++_l) {
+      text = svgContainer.append("text")
+          .attr("x", 25)
+          .attr("y", 63 + i * 20)
+          .style("text-anchor", "middle")
+          .text(i + "h");
+    }
 
     for (i = _l = 0; _l <= 6; i = ++_l) {
       dayFreq = freq[dayMap[i]];
