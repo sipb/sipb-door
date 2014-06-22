@@ -2,8 +2,7 @@
 import json, time
 
 curtime = int(time.time())
-lasttime = curtime - 60*60*24*10
-dump = dict()
+dump = []
 
 f = open('/afs/sipb/project/door/log', 'r')
 for line in f:
@@ -11,16 +10,18 @@ for line in f:
     arr = line.split(',')
     toggle = ("start" if int(arr[0]) else "end")
     unixtime = int(arr[1])
-    datetime = arr[3].split()
-    day = datetime[2]
-    time = datetime[3][:-3]
-    if unixtime >= lasttime:
-      if day in dump:
-        dump[day][-1][toggle] = time
+    if len(dump) == 0:
+      if toggle == "start":
+        dump.append([unixtime]) 
+    else:
+      if len(dump[-1]) == 1:
+        dump[-1].append(unixtime)
       else:
-        dump[day] = list()
-        dump[day].append(dict())
-        dump[day][0][toggle] = time
+        dump.append([unixtime])
+
+if len(dump[-1]) == 1:
+  dump.pop()
+        
 f.close()
 
 print "Content-type: application/json\n"
