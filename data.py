@@ -3,7 +3,7 @@ import json,time
 SEC_IN_DAY = 86400
 UNIX_WEEK_DEVIATION = 259200
 DAY_IN_WEEK = 7
-UTC_DEVIATION = 3600
+UTC_DEVIATION = 14400
 SEC_IN_WEEK = SEC_IN_DAY * DAY_IN_WEEK
 
 # Get the number of seconds since the most recent 
@@ -26,7 +26,7 @@ if doorLogs[0][0]=="0":
   doorLogs=doorLogs[1:] # removes first line if it's a closed line
 doorIntervals = [(doorLogs[2*n],doorLogs[2*n+1]) for n in range(len(doorLogs)/2)] # full lines from file
 timeIntervals = [(int(line[0][1]),int(line[1][1])) for line in doorIntervals]
-print map_relative_times(timeIntervals)[:18]
+dump = map_relative_times(timeIntervals)
 '''
 for line in f:
   if line[0] != '#': 
@@ -45,7 +45,6 @@ for line in f:
         dump[day].append(dict())
         dump[day][0][toggle] = time
 f.close()
-
+'''
 print "Content-type: application/json\n"
 print json.dumps(dump)
-'''
