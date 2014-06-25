@@ -1,41 +1,91 @@
 $(document).ready(function() {
+
+  var hourSeconds = 60 * 60
+  var daySeconds = 24 * hourSeconds;
+  var weekSeconds = 7 * daySeconds;
+
+  var heats = [[],[],[],[],[],[],[]];
+
+  var dayMap = {
+    0: "sunday",
+    1: "monday",
+    2: "tuesday",
+    3: "wednesday",
+    4: "thursday",
+    5: "friday",
+    6: "saturday"
+  };
+
+  var freq = {
+    sunday: {},
+    monday: {},
+    tuesday: {},
+    wednesday: {},
+    thursday: {},
+    friday: {},
+    saturday: {}
+  };
+
+  // Initialise 24 hour object
+  for (day in freq) {
+    dayObj = freq[day];
+    for (hour = _i = 0; _i <= 23; hour = ++_i) {
+      dayObj[hour] = 0;
+    }
+  }
+
+  // Initial display
+  // Display stuff here
+  svgContainer = d3.select("body").append("svg")
+      .attr("width", 800)
+      .attr("height", 580);
+      //.style("border", "1px solid #ccc");
+
+  for (i = _l = 0; _l <= 23; i = ++_l) {
+    text = svgContainer.append("text")
+        .attr("x", 25)
+        .attr("y", 63 + i * 20)
+        .style("text-anchor", "middle")
+        .text(i + "h");
+  }
+
+  // Display gradient bar
+  //legend = svgContainer.append("rect")
+  //    .attr
+
+  for (i = _l = 0; _l <= 6; i = ++_l) {
+    dayFreq = freq[dayMap[i]];
+    x = i * 100;
+
+    text = svgContainer.append("text")
+        .attr("x", 100 + x)
+        .attr("y", 40)
+        .style("text-anchor", "middle")
+        .text(dayMap[i])
+
+    for (hour in dayFreq) {
+      if (hour == 24) continue;
+      y = hour * 20;
+      
+      heats[i][hour] = svgContainer.append("rect")
+          .attr("x", 50 + x)
+          .attr("y", 50 + y)
+          .attr("rx", 4)
+          .attr("ry", 4)
+          .attr("width", 100)
+          .attr("height", 20)
+          .style({
+            "fill": "hsl(240, 50%, 100%)",
+            "stroke": "#E6E6E6",
+            "stroke-width": "1px"
+          });
+    }
+  }
+
+  // Acquire data
   $.getJSON( "./data.py", function( data ) {
 
-    var hourSeconds = 60 * 60
-    var daySeconds = 24 * hourSeconds;
-    var weekSeconds = 7 * daySeconds;
-
-    console.log(data);
-
-    var occurrence = (data[data.length-1][1] - data[0][0]) / (hourSeconds * 24 * 7)
-
-    var dayMap = {
-      0: "sunday",
-      1: "monday",
-      2: "tuesday",
-      3: "wednesday",
-      4: "thursday",
-      5: "friday",
-      6: "saturday"
-    };
-
-    var freq = {
-      sunday: {},
-      monday: {},
-      tuesday: {},
-      wednesday: {},
-      thursday: {},
-      friday: {},
-      saturday: {}
-    };
-
-    // Initialise 24 hour object
-    for (day in freq) {
-      dayObj = freq[day];
-      for (hour = _i = 0; _i <= 23; hour = ++_i) {
-        dayObj[hour] = 0;
-      }
-    }
+    var occurrence = (data[data.length-1][1] - data[0][0]) / (hourSeconds * 24 * 7);
 
     updateHours = function(day, opened, closed) {
       var i, _j, _results;
@@ -94,54 +144,19 @@ $(document).ready(function() {
       } 
     }
 
-
-    // Display stuff here
-    svgContainer = d3.select("body").append("svg")
-        .attr("width", 800)
-        .attr("height", 580)
-        .style("border", "1px solid #ccc");
-
-    for (i = _l = 0; _l <= 23; i = ++_l) {
-      text = svgContainer.append("text")
-          .attr("x", 25)
-          .attr("y", 63 + i * 20)
-          .style("text-anchor", "middle")
-          .text(i + "h");
-    }
-
     for (i = _l = 0; _l <= 6; i = ++_l) {
       dayFreq = freq[dayMap[i]];
       x = i * 100;
 
-      text = svgContainer.append("text")
-          .attr("x", 100 + x)
-          .attr("y", 40)
-          .style("text-anchor", "middle")
-          .text(dayMap[i])
-
       for (hour in dayFreq) {
         if (hour == 24) continue;
         frac = dayFreq[hour] / occurrence;
-        console.log(frac);
         y = hour * 20;
-        hue = 25 * frac;
+        hue = 24 * frac;
         lightness = (1 - frac) * 100;
         
-        rectangle = svgContainer.append("rect")
-            .attr("x", 50 + x)
-            .attr("y", 50 + y)
-            .attr("rx", 4)
-            .attr("ry", 4)
-            .attr("width", 100)
-            .attr("height", 20)
-            .style({
-              "fill": "hsl(" + hue + ",50%," + lightness + "%)",
-              "stroke": "#E6E6E6",
-              "stroke-width": "1px"
-            });
+        heats[i][hour].transition().style("fill", "hsl(" + hue + ", 50%," + lightness + "%)").duration(1000).delay( i * 120 + Number(hour) * 10);
       }
     }
-
-    console.log(JSON.stringify(freq));
-  })
+  });
 });
