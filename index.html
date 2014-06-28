@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html ng-app>
+<html ng-app="heatApp">
 <head>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.13/angular.min.js"></script>
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="./script.js"></script>
@@ -10,13 +9,19 @@ body {
   font-family: courier;
   font-size: 12px;
 }
+
+form {
+  margin-left: 50px;
+}
 </style>
 </head>
-<body>
-  <h2>Heat map of open door probability ({{startDate | date : mediumDate }} to {{endDate | date : mediumDate }})!</h2>
-  <input type="date" ng-model="startDate" placeholder="Choose Start Date" />
-  <input type="date" ng-model="endDate" placeholder="Choose End Date" />
-  <input type="submit" ng-model="submit" />
-  <br>
+<body ng-controller="visualControl">
+  <form ng-submit="processForm()" ng-class="{ 'has-error' : error }">
+  <h2>Heat map of open door probability ({{ formData.startDate | date : mediumDate }} to {{ formData.endDate | date : mediumDate }})!</h2>
+    <input type="date" ng-model="formData.startDate" placeholder="Choose Start Date" />
+    <input type="date" ng-model="formData.endDate" placeholder="Choose End Date" />
+    <input type="submit" />
+    <span ng-show="message">{{ message }}</span>
+  </form>
 </body>
 </html>

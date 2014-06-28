@@ -1,5 +1,14 @@
-$(document).ready(function() {
+// Angular module
+var heatApp = angular.module('heatApp', []);
 
+// Angular Controller 
+function visualControl($scope, $http) {
+
+  /*
+    INITIALIZE VARIABLES
+  */
+
+  // Datetime manipulation functions
   var hourSeconds = 60 * 60
   var daySeconds = 24 * hourSeconds;
   var weekSeconds = 7 * daySeconds;
@@ -26,15 +35,64 @@ $(document).ready(function() {
     saturday: {}
   };
 
-  // Initialise 24 hour object
-  for (day in freq) {
-    dayObj = freq[day];
-    for (hour = _i = 0; _i <= 23; hour = ++_i) {
-      dayObj[hour] = 0;
+  // Function that resets or initialises heats 
+  resetHeats = function() {
+    for (day in freq) {
+      dayObj = freq[day];
+      for (hour = _i = 0; _i <= 23; hour = ++_i) {
+        dayObj[hour] = 0;
+      }
     }
   }
 
-  // Initial display
+  // Initialise 24 hour object
+  resetHeats();
+
+  // Acquire data
+  $http({
+      method  : 'GET',
+      url     : './data.py',
+  })
+    .success( function( data, status ) {
+      updateGraphic(data);
+    })
+    .error(function(data, status, headers, config) {
+      console.log("error! go work on better debugging, you.");
+    });
+
+  /*
+    FUNCTIONS
+  */
+
+  // Form functions
+  $scope.formData = {};
+
+  $scope.processForm = function() {
+    d = $scope.formData
+    if (typeof(d.startDate) == "undefined" || typeof(d.endDate) == "undefined"){
+      $scope.message = "Need to set both dates!";
+    } else if (d.startDate.getTime() > d.endDate.getTime()) {
+      $scope.message = "Invalid! The first date is after the second date!";
+    } else {
+      $http({
+          method  : 'POST',
+          url     : './data.py',
+          data    : d,
+          headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  
+      })
+        .success(function(data) {
+          $scope.message = "Got data, but display function not properly set"
+          resetHeats();
+          updateGraphic(data);          
+        });
+    }
+  }
+
+
+  /*
+    INITIAL DISPLAY
+  */
+
   // Display stuff here
   svgContainer = d3.select("body").append("svg")
       .attr("width", 800)
@@ -82,9 +140,8 @@ $(document).ready(function() {
     }
   }
 
-  // Acquire data
-  $.getJSON( "./data.py", function( data ) {
-
+  // Begin update graphic function
+  updateGraphic = function(data) {
     var occurrence = (data[data.length-1][1] - data[0][0]) / (hourSeconds * 24 * 7);
 
     updateHours = function(day, opened, closed) {
@@ -158,5 +215,6 @@ $(document).ready(function() {
         heats[i][hour].transition().style("fill", "hsl(" + hue + ", 50%," + lightness + "%)").duration(1000).delay( i * 120 + Number(hour) * 10);
       }
     }
-  });
-});
+  }
+
+}
