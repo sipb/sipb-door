@@ -50,8 +50,8 @@ function visualControl($scope, $http) {
 
   // Acquire data
   $http({
-      method  : 'GET',
-      url     : './data.py',
+      method  : 'POST',
+      url     : './data.cgi',
   })
     .success( function( data, status ) {
       updateGraphic(data);
@@ -76,7 +76,7 @@ function visualControl($scope, $http) {
     } else {
       $http({
           method  : 'POST',
-          url     : './data.py',
+          url     : './data.cgi',
           data    : d,
           headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  
       })

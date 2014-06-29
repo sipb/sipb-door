@@ -1,10 +1,26 @@
 #!/usr/bin/python
-import json,time
+import sys,json,time
 SEC_IN_DAY = 86400
 UNIX_WEEK_DEVIATION = 259200
 DAY_IN_WEEK = 7
 UTC_DEVIATION = 14400
 SEC_IN_WEEK = SEC_IN_DAY * DAY_IN_WEEK
+
+# params is an object containing the start time and end time
+params = sys.stdin.read()
+if params:
+  params = json.loads(params)
+  startDate = params["startDate"]
+  endDate = params["endDate"]
+#print "Content-type: text/html\n"
+#print startDate, endDate
+
+'''
+TODO:
+Convert startDate and endDate into unixtimestamps:
+>> 2014-06-01T04:00:00.000Z
+Then select tuples only within the correct range from the log
+'''
 
 # Get the number of seconds since the most recent 
 # week start (midnight between Sat. and Sun.)
