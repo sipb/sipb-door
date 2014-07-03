@@ -7,6 +7,8 @@ UTC_DEVIATION = 14400
 SEC_IN_WEEK = SEC_IN_DAY * DAY_IN_WEEK
 
 doorLogs = [line.split(',') for line in open('/afs/sipb/project/door/log','r').readlines() if all(['#' not in a for a in line])]
+if doorLogs[-1][0]=='1':
+  doorLogs.append(['0',time.time()])
 
 # params is an object containing the start time and end time
 params = sys.stdin.read()

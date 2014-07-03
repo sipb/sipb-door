@@ -68,14 +68,14 @@ function visualControl($scope, $filter, $http) {
 
   // Form functions
   $scope.processForm = function() {
-    d = $scope.formData
+    d = $scope.formData;
     if (!(d.startDate || d.endDate)) {
       $scope.message = "Invalid date formats! Need to set both dates!";
     } else if (d.startDate.getTime() > d.endDate.getTime()) {
       $scope.message = "Invalid dates! The first date should be before the second date!";
     } else {
       // Convert to Unixtime without affecting original object
-      r = {}
+      r = {};
       r.startDate = Date.parse($filter('date')(d.startDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000;
       r.endDate = Date.parse($filter('date')(d.endDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000;
       $http({
