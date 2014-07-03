@@ -99,7 +99,7 @@ function visualControl($scope, $filter, $http) {
   // Display stuff here
   svgContainer = d3.select("body").append("svg")
       .attr("width", 800)
-      .attr("height", 620)
+      .attr("height", 600);
       //.style("border", "1px solid #ccc");
 
   for (i = _l = 0; _l <= 23; i = ++_l) {
@@ -263,4 +263,11 @@ function visualControl($scope, $filter, $http) {
     }
   }
 
+}
+
+// Fun angular controller
+function funStuff($scope) {
+  $scope.toggleSpin = function() {
+    $scope.whee = !$scope.whee;
+  };
 }

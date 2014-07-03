@@ -1,29 +1,31 @@
 <!DOCTYPE html>
+<!--
+SIPB Door
+Ray Hua Wu <dzaefn@mit.edu>
+Ong Ming Yang <me@ongmingyang.com>
+-->
 <html ng-app="heatApp">
 <head>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.13/angular.min.js"></script>
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="./script.js"></script>
-<style>
-body {
-  font-family: helvetica, arial, sans-serif;
-  font-size: 12px;
-}
-
-svg {
-  font-family: courier;
-}
-
-form {
-  margin-left: 50px;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body ng-controller="visualControl">
+  <div id="fun" ng-controller="funStuff">
+    <div ng-class="whee ? 'ball spin' : 'ball'">
+      <img src="//cesium.scripts.mit.edu/door/door.sh" />
+    </div>
+    <div class="ball" ng-click="toggleSpin()">
+      <div class="play">
+       {{ whee ? '&#x025FC;' : '&#x25b6;' }}
+      </div>
+    </div>
+  </div>
   <form ng-submit="processForm()">
   <h2>Heat map of open door probability <span ng-if="formData.startDate && formData.endDate">({{ formData.startDate | date : mediumDate }} to {{ formData.endDate | date : mediumDate }})</span></h2>
-    <input type="date" ng-model="formData.startDate" placeholder="Choose Start Date" />
-    <input type="date" ng-model="formData.endDate" placeholder="Choose End Date" />
+    <input type="date" ng-model="formData.startDate" placeholder="Start Date (mm/dd/yyyy)" />
+    <input type="date" ng-model="formData.endDate" placeholder="End Date (mm/dd/yyyy)" />
     <input type="submit" />
     <span ng-show="message" ng-class="{ 'has-error' : error }">{{ message }}</span>
   </form>

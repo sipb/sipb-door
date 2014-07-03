@@ -1,0 +1,56 @@
+body {
+  font-family: helvetica, arial, sans-serif;
+  //background-image:url('//cesium.scripts.mit.edu/door/door.sh');
+  font-size: 12px;
+}
+
+svg {
+  font-family: courier;
+  background-color: #fff;
+}
+
+form {
+  padding-left: 50px;
+  background-color: #fff;
+}
+
+div#fun {
+  position: absolute;
+  top: 120px;
+  left: 820px;
+}
+
+div.ball {
+  width: 200px;
+  height: 200px;
+  margin: 30px;
+  background-color: #eee;
+  border-radius: 150px;
+}
+
+div.ball img {
+  margin: 20px 0px 0px 60px;
+}
+
+div.ball .play {
+  padding-top: 70px;
+  font-size: 50px;
+  text-align: center;
+}
+
+.spin {
+  -webkit-animation: spin 1s infinite linear;
+  animation: spin 1s infinite linear;
+}
+
+@-webkit-keyframes spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+      }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+      }
+}
+
