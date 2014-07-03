@@ -14,14 +14,11 @@ if params:
   params = json.loads(params)
   startDate = params["startDate"]
   endDate = params["endDate"]
-#print "Content-type: text/html\n"
-#print startDate, endDate
-
-selectedDoorLogs=[]
-for n in doorLogs:
-  if startDate<n[1]<endDate:
-    selectedDoorLogs.append(n)
-doorLogs = selectedDoorLogs[:]
+  selectedDoorLogs=[]
+  for n in doorLogs:
+    if int(startDate)<=int(n[1])<=int(endDate):
+      selectedDoorLogs.append(n)
+  doorLogs = selectedDoorLogs[:]
 
 # Get the number of seconds since the most recent 
 # week start (midnight between Sat. and Sun.)
@@ -43,24 +40,6 @@ if doorLogs[0][0]=="0":
 doorIntervals = [(doorLogs[2*n],doorLogs[2*n+1]) for n in range(len(doorLogs)/2)] # full lines from file
 timeIntervals = [(int(line[0][1]),int(line[1][1])) for line in doorIntervals]
 dump = map_relative_times(timeIntervals)
-'''
-for line in f:
-  if line[0] != '#': 
-    arr = line.split(',')
 
-    toggle = ("start" if int(arr[0]) else "end")
-    unixtime = int(arr[1])
-    datetime = arr[3].split()
-    day = datetime[2]
-    time = datetime[3][:-3]
-    if unixtime >= lasttime:
-      if day in dump:
-        dump[day][-1][toggle] = time
-      else:
-        dump[day] = list()
-        dump[day].append(dict())
-        dump[day][0][toggle] = time
-f.close()
-'''
 print "Content-type: application/json\n"
 print json.dumps(dump)

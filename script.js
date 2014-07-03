@@ -13,8 +13,10 @@ function visualControl($scope, $filter, $http) {
   var daySeconds = 24 * hourSeconds;
   var weekSeconds = 7 * daySeconds;
 
+  // Contains references to svg rectangles representing the timetable 
   var heats = [[],[],[],[],[],[],[]];
 
+  // Semantic map of day index -> day name
   var dayMap = {
     0: "sunday",
     1: "monday",
@@ -25,6 +27,7 @@ function visualControl($scope, $filter, $http) {
     6: "saturday"
   };
 
+  // Global object that contains percentage of time door is opened
   var freq = {
     sunday: {},
     monday: {},
@@ -35,7 +38,10 @@ function visualControl($scope, $filter, $http) {
     saturday: {}
   };
 
-  // Function that resets or initialises heats 
+  // Initialize empty angular form object
+  $scope.formData = {};
+
+  // Function that resets or initialises freq object
   resetHeats = function() {
     for (day in freq) {
       dayObj = freq[day];
@@ -60,13 +66,7 @@ function visualControl($scope, $filter, $http) {
       console.log("error! go work on better debugging, you.");
     });
 
-  /*
-    FUNCTIONS
-  */
-
   // Form functions
-  $scope.formData = {};
-
   $scope.processForm = function() {
     d = $scope.formData
     if (!(d.startDate || d.endDate)) {
@@ -76,8 +76,8 @@ function visualControl($scope, $filter, $http) {
     } else {
       // Convert to Unixtime without affecting original object
       r = {}
-      r.startDate = Date.parse($filter('date')(d.startDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000
-      r.endDate = Date.parse($filter('date')(d.endDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000
+      r.startDate = Date.parse($filter('date')(d.startDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000;
+      r.endDate = Date.parse($filter('date')(d.endDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000;
       $http({
           method  : 'POST',
           url     : './data.cgi',
@@ -85,9 +85,9 @@ function visualControl($scope, $filter, $http) {
           headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  
       })
         .success(function(data) {
-          $scope.message = "Got data, but display function not properly set"
           resetHeats();
           updateGraphic(data);          
+          $scope.message = "Got data!"
         });
     }
   }
@@ -126,10 +126,14 @@ function visualControl($scope, $filter, $http) {
       .attr("stop-color", "#C86C59");
 
   gradient.append("svg:stop")
-      .attr("offset", "100%")
+      .attr("offset", "90%")
       .attr("stop-color", "#221105");
 
-  legend = svgContainer.append("rect")
+  gradient.append("svg:stop")
+      .attr("offset", "100%")
+      .attr("stop-color", "#000000");
+
+  svgContainer.append("rect")
       .attr("x", 90)
       .attr("y", 560)
       .attr("width", 500)
@@ -182,10 +186,12 @@ function visualControl($scope, $filter, $http) {
     }
   }
 
-  // Begin update graphic function
+  // Update graphic given data tuples
   updateGraphic = function(data) {
-    var occurrence = (data[data.length-1][1] - data[0][0]) / (hourSeconds * 24 * 7);
+    var occurrence = (data[data.length-1][1] - data[0][0]) / weekSeconds;
+    occurrence = Math.max(occurrence, 1);
 
+    // Sets freq object to contain fraction of hours opened
     updateHours = function(day, opened, closed) {
       var i, _j, _results;
       var hourOpened = Math.floor(opened / hourSeconds);
@@ -245,12 +251,10 @@ function visualControl($scope, $filter, $http) {
 
     for (i = _l = 0; _l <= 6; i = ++_l) {
       dayFreq = freq[dayMap[i]];
-      x = i * 100;
 
       for (hour in dayFreq) {
         if (hour == 24) continue;
         frac = dayFreq[hour] / occurrence;
-        y = hour * 20;
         hue = 24 * frac;
         lightness = (1 - frac) * 100;
         
