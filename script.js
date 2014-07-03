@@ -2,7 +2,7 @@
 var heatApp = angular.module('heatApp', []);
 
 // Angular Controller 
-function visualControl($scope, $http) {
+function visualControl($scope, $filter, $http) {
 
   /*
     INITIALIZE VARIABLES
@@ -72,8 +72,12 @@ function visualControl($scope, $http) {
     if (typeof(d.startDate) == "undefined" || typeof(d.endDate) == "undefined"){
       $scope.message = "Need to set both dates!";
     } else if (d.startDate.getTime() > d.endDate.getTime()) {
-      $scope.message = "Invalid! The first date is after the second date!";
+      $scope.message = "Invalid! The first date should be before the second date!";
     } else {
+    // Convert to Unixtime
+    d.startDate = Date.parse($filter('date')(d.startDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000
+    d.endDate = Date.parse($filter('date')(d.endDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000
+
       $http({
           method  : 'POST',
           url     : './data.cgi',
@@ -87,7 +91,6 @@ function visualControl($scope, $http) {
         });
     }
   }
-
 
   /*
     INITIAL DISPLAY

@@ -17,9 +17,7 @@ if params:
 
 '''
 TODO:
-Convert startDate and endDate into unixtimestamps:
->> 2014-06-01T04:00:00.000Z
-Then select tuples only within the correct range from the log
+Select tuples only within the correct range from the log
 '''
 
 # Get the number of seconds since the most recent 

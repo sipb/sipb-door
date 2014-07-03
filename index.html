@@ -6,8 +6,12 @@
 <script type="text/javascript" src="./script.js"></script>
 <style>
 body {
-  font-family: courier;
+  font-family: helvetica, arial, sans-serif;
   font-size: 12px;
+}
+
+svg {
+  font-family: courier;
 }
 
 form {
@@ -16,12 +20,12 @@ form {
 </style>
 </head>
 <body ng-controller="visualControl">
-  <form ng-submit="processForm()" ng-class="{ 'has-error' : error }">
-  <h2>Heat map of open door probability ({{ formData.startDate | date : mediumDate }} to {{ formData.endDate | date : mediumDate }})!</h2>
+  <form ng-submit="processForm()">
+  <h2>Heat map of open door probability <span ng-if="(formData.startDate != undefined) && (formData.endDate != undefined)">({{ formData.startDate | date : mediumDate }} to {{ formData.endDate | date : mediumDate }})</span></h2>
     <input type="date" ng-model="formData.startDate" placeholder="Choose Start Date" />
     <input type="date" ng-model="formData.endDate" placeholder="Choose End Date" />
     <input type="submit" />
-    <span ng-show="message">{{ message }}</span>
+    <span ng-show="message" ng-class="{ 'has-error' : error }">{{ message }}</span>
   </form>
 </body>
 </html>
