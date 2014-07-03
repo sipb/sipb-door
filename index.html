@@ -21,7 +21,7 @@ form {
 </head>
 <body ng-controller="visualControl">
   <form ng-submit="processForm()">
-  <h2>Heat map of open door probability <span ng-if="(formData.startDate != undefined) && (formData.endDate != undefined)">({{ formData.startDate | date : mediumDate }} to {{ formData.endDate | date : mediumDate }})</span></h2>
+  <h2>Heat map of open door probability <span ng-if="formData.startDate && formData.endDate">({{ formData.startDate | date : mediumDate }} to {{ formData.endDate | date : mediumDate }})</span></h2>
     <input type="date" ng-model="formData.startDate" placeholder="Choose Start Date" />
     <input type="date" ng-model="formData.endDate" placeholder="Choose End Date" />
     <input type="submit" />

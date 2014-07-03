@@ -69,19 +69,19 @@ function visualControl($scope, $filter, $http) {
 
   $scope.processForm = function() {
     d = $scope.formData
-    if (typeof(d.startDate) == "undefined" || typeof(d.endDate) == "undefined"){
-      $scope.message = "Need to set both dates!";
+    if (!(d.startDate || d.endDate)) {
+      $scope.message = "Invalid date formats! Need to set both dates!";
     } else if (d.startDate.getTime() > d.endDate.getTime()) {
-      $scope.message = "Invalid! The first date should be before the second date!";
+      $scope.message = "Invalid dates! The first date should be before the second date!";
     } else {
-    // Convert to Unixtime
-    d.startDate = Date.parse($filter('date')(d.startDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000
-    d.endDate = Date.parse($filter('date')(d.endDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000
-
+      // Convert to Unixtime without affecting original object
+      r = {}
+      r.startDate = Date.parse($filter('date')(d.startDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000
+      r.endDate = Date.parse($filter('date')(d.endDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000
       $http({
           method  : 'POST',
           url     : './data.cgi',
-          data    : d,
+          data    : r,
           headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  
       })
         .success(function(data) {
@@ -99,7 +99,7 @@ function visualControl($scope, $filter, $http) {
   // Display stuff here
   svgContainer = d3.select("body").append("svg")
       .attr("width", 800)
-      .attr("height", 580);
+      .attr("height", 620)
       //.style("border", "1px solid #ccc");
 
   for (i = _l = 0; _l <= 23; i = ++_l) {
@@ -111,9 +111,48 @@ function visualControl($scope, $filter, $http) {
   }
 
   // Display gradient bar
-  //legend = svgContainer.append("rect")
-  //    .attr
+  gradient = svgContainer.append("svg:defs")
+    .append("svg:linearGradient")
+      .attr("id", "gradient")
+      .attr("x1", "0%")
+      .attr("x2", "100%");
 
+  gradient.append("svg:stop")
+      .attr("offset", "0%")
+      .attr("stop-color", "#ffffff");
+
+  gradient.append("svg:stop")
+      .attr("offset", "50%")
+      .attr("stop-color", "#C86C59");
+
+  gradient.append("svg:stop")
+      .attr("offset", "100%")
+      .attr("stop-color", "#221105");
+
+  legend = svgContainer.append("rect")
+      .attr("x", 90)
+      .attr("y", 560)
+      .attr("width", 500)
+      .attr("height", 20)
+      .style({
+        "fill": "url(#gradient)",
+        "stroke": "#D6D6D6",
+        "stroke-width": "1px"
+      });
+
+  svgContainer.append("text")
+      .attr("x", 65)
+      .attr("y", 574)
+      .style("text-anchor", "middle")
+      .text("0%");
+
+  svgContainer.append("text")
+      .attr("x", 620)
+      .attr("y", 574)
+      .style("text-anchor", "middle")
+      .text("100%");
+
+  // Display labels
   for (i = _l = 0; _l <= 6; i = ++_l) {
     dayFreq = freq[dayMap[i]];
     x = i * 100;
@@ -136,8 +175,8 @@ function visualControl($scope, $filter, $http) {
           .attr("width", 100)
           .attr("height", 20)
           .style({
-            "fill": "hsl(240, 50%, 100%)",
-            "stroke": "#E6E6E6",
+            "fill": "hsl(12, 50%, 50%)",
+            "stroke": "#D6D6D6",
             "stroke-width": "1px"
           });
     }
