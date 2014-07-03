@@ -6,6 +6,8 @@ DAY_IN_WEEK = 7
 UTC_DEVIATION = 14400
 SEC_IN_WEEK = SEC_IN_DAY * DAY_IN_WEEK
 
+doorLogs = [line.split(',') for line in open('/afs/sipb/project/door/log','r').readlines() if all(['#' not in a for a in line])]
+
 # params is an object containing the start time and end time
 params = sys.stdin.read()
 if params:
@@ -15,10 +17,11 @@ if params:
 #print "Content-type: text/html\n"
 #print startDate, endDate
 
-'''
-TODO:
-Select tuples only within the correct range from the log
-'''
+selectedDoorLogs=[]
+for n in doorLogs:
+  if startDate<n[1]<endDate:
+    selectedDoorLogs.append(n)
+doorLogs = selectedDoorLogs[:]
 
 # Get the number of seconds since the most recent 
 # week start (midnight between Sat. and Sun.)
@@ -35,7 +38,6 @@ def map_relative_times(list_of_tuples):
     relatively_timed_tuples.append((open_tuple[0]-most_recent_week_start,open_tuple[1]-most_recent_week_start))
   return relatively_timed_tuples
 
-doorLogs = [line.split(',') for line in open('/afs/sipb/project/door/log', 'r').readlines() if all(['#' not in a for a in line])]
 if doorLogs[0][0]=="0":
   doorLogs=doorLogs[1:] # removes first line if it's a closed line
 doorIntervals = [(doorLogs[2*n],doorLogs[2*n+1]) for n in range(len(doorLogs)/2)] # full lines from file
