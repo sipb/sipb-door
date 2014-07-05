@@ -79,6 +79,7 @@ function visualControl($scope, $filter, $http) {
       if (r.startDate >= r.endDate) {
         $scope.message = "Invalid dates! The first date should be before the second date!";
       } else {
+        $scope.message = "Loading data..."
         $http({
             method  : 'POST',
             url     : './data.cgi',
