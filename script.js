@@ -1,3 +1,10 @@
+/*
+  NOTE! I'm doing this the wrong way! d3 should be included as a service
+  or a directive in Angular. I'm doing alot of DOM manipulation which
+  defeats the purpose of having Angular in the first place. Refactor if
+  we have the time.
+*/
+
 // Angular module
 var heatApp = angular.module('heatApp', []);
 
@@ -88,7 +95,8 @@ function visualControl($scope, $filter, $http) {
         })
           .success(function(data) {
             resetHeats();
-            updateGraphic(data);          
+            $scope.headerData = d; // display FROM and TO data only after data is received
+            updateGraphic(data);
             $scope.message = "Got data!"
           });
       }
@@ -105,7 +113,7 @@ function visualControl($scope, $filter, $http) {
       .attr("height", 600);
       //.style("border", "1px solid #ccc");
 
-  for (i = _l = 0; _l <= 23; i = ++_l) {
+  for (i = 0; i <= 23; i++) {
     text = svgContainer.append("text")
         .attr("x", 25)
         .attr("y", 63 + i * 20)
@@ -174,9 +182,10 @@ function visualControl($scope, $filter, $http) {
       if (hour == 24) continue;
       y = hour * 20;
       
-      heats[i][hour] = svgContainer.append("rect")
-          .attr("x", 50 + x)
-          .attr("y", 50 + y)
+      node = svgContainer.append("g")
+          .attr("transform", "translate("+(50+x)+","+(50+y)+")");
+
+      node.append("rect")
           .attr("rx", 4)
           .attr("ry", 4)
           .attr("width", 100)
@@ -186,6 +195,37 @@ function visualControl($scope, $filter, $http) {
             "stroke": "#D6D6D6",
             "stroke-width": "1px"
           });
+
+      node.append("text")
+          .attr("x", 50)
+          .attr("y", 14)
+          .attr("text-anchor", "middle")
+          .attr("opacity", "0");
+
+      /*
+      node.on("mouseover", function() {
+          d3.select(this)
+              .select("text")
+              .attr("opacity", 1);
+          d3.select(this)
+              .select("rect")
+              .attr("opacity", 0);
+          }).on("mouseout", function() {
+          d3.select(this)
+              .select("text")
+              .transition()
+              .delay(200)
+              .attr("opacity", 0);
+          d3.select(this)
+              .select("rect")
+              .transition()
+              .delay(200)
+              .attr("opacity", 1);
+          });
+      */
+
+      heats[i][hour] = node;
+
     }
   }
 
@@ -196,7 +236,7 @@ function visualControl($scope, $filter, $http) {
 
     // Sets freq object to contain fraction of hours opened
     updateHours = function(day, opened, closed) {
-      var i, _j, _results;
+      var i;
       var hourOpened = Math.floor(opened / hourSeconds);
       var hourClosed = Math.floor(closed / hourSeconds);
       opened = opened - hourOpened * hourSeconds;
@@ -205,7 +245,7 @@ function visualControl($scope, $filter, $http) {
       if (hourOpened === hourClosed) {
         day[hourOpened] += (opened - closed) / hourSeconds;
       } else {
-        for (i = _j = hourOpened; _j <= hourClosed; i = ++_j) {
+        for (i = hourOpened; i <= hourClosed; i++) {
           switch (i) {
             case hourOpened:
               day[i] += (hourSeconds - opened) / hourSeconds;
@@ -220,16 +260,15 @@ function visualControl($scope, $filter, $http) {
       }
     };
 
-    for (_j = 0, _len = data.length; _j < _len; _j++) {
-      tuple = data[_j];
+    for (j = 0; j < data.length; j++) {
+      tuple = data[j];
       daysPassed = tuple.map(function(t) {
         return Math.floor(t / daySeconds);
       });
       residueOpened = tuple[0] - daysPassed[0] * daySeconds;
       residueClosed = tuple[1] - daysPassed[1] * daySeconds;
-      _ref1 = daysPassed.map(function(days) {
-        return days % 7;
-      }), dayOpened = _ref1[0], dayClosed = _ref1[1];
+      dayOpened = daysPassed[0] % 7;
+      dayClosed = daysPassed[1] % 7;
 
       if (daysPassed[0] === daysPassed[1]) {
         updateHours(freq[dayMap[dayOpened]], residueOpened, residueClosed);
@@ -252,7 +291,7 @@ function visualControl($scope, $filter, $http) {
       } 
     }
 
-    for (i = _l = 0; _l <= 6; i = ++_l) {
+    for (i = 0; i <= 6; i++) {
       dayFreq = freq[dayMap[i]];
 
       for (hour in dayFreq) {
@@ -261,7 +300,8 @@ function visualControl($scope, $filter, $http) {
         hue = 24 * frac;
         lightness = (1 - frac) * 100;
         
-        heats[i][hour].transition().style("fill", "hsl(" + hue + ", 50%," + lightness + "%)").duration(1000).delay( i * 120 + Number(hour) * 10);
+        heats[i][hour].select("rect").transition().style("fill", "hsl(" + hue + ", 50%," + lightness + "%)").duration(1000).delay( i * 120 + Number(hour) * 10);
+        heats[i][hour].select("text").text(Math.round(frac*100));
       }
     }
   }

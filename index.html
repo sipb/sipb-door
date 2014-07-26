@@ -2,7 +2,7 @@
 <!--
 
 SIPB Door
-https://github.com/ongmingyang/sipb-door
+https://github.com/sipb/sipb-door
 
 Ray Hua Wu <dzaefn@mit.edu>
 Ong Ming Yang <me@ongmingyang.com>
@@ -18,7 +18,7 @@ Ong Ming Yang <me@ongmingyang.com>
 <body ng-controller="visualControl">
   <div id="fun" ng-controller="funStuff">
     <div ng-class="whee ? 'ball spin' : 'ball'">
-      <img src="//cesium.scripts.mit.edu/door/door.sh" />
+      <img src="http://sipb-door.scripts.mit.edu/widget-3d/door.sh" />
     </div>
     <div class="ball" ng-click="toggleSpin()">
       <div class="play">
@@ -27,7 +27,7 @@ Ong Ming Yang <me@ongmingyang.com>
     </div>
   </div>
   <form ng-submit="processForm()">
-  <h2>Heat map of open door probability <span ng-if="formData.startDate && formData.endDate">({{ formData.startDate | date : mediumDate }} to {{ formData.endDate | date : mediumDate }})</span></h2>
+  <h2>Heat map of open door probability <span ng-if="headerData.startDate && headerData.endDate">({{ headerData.startDate | date : mediumDate }} to {{ headerData.endDate | date : mediumDate }})</span></h2>
     <input type="date" ng-model="formData.startDate" placeholder="Start Date (mm/dd/yyyy)" />
     <input type="date" ng-model="formData.endDate" placeholder="End Date (mm/dd/yyyy)" />
     <input type="submit" />
