@@ -95,7 +95,13 @@ function visualControl($scope, $filter, $http) {
         })
           .success(function(data) {
             resetHeats();
-            $scope.headerData = d; // display FROM and TO data only after data is received
+
+            // display FROM and TO data only after data is received
+            $scope.headerData = {
+              startDate: d.startDate,
+              endDate  : d.endDate
+            }
+
             updateGraphic(data);
             $scope.message = "Got data!"
           });
