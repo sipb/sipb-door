@@ -87,6 +87,7 @@ function visualControl($scope, $filter, $http) {
             headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  
         })
           .success(function(data) {
+            console.log(data[0]);
             resetHeats();
             updateGraphic(data);          
             $scope.message = "Got data!"
@@ -195,12 +196,12 @@ function visualControl($scope, $filter, $http) {
     occurrence = Math.max(occurrence, 1);
 
     // Sets freq object to contain fraction of hours opened
-    updateHours = function(day, opened, closed) {
+    var updateHours = function(day, opened, closed) {
       var i, _j, _results;
       var hourOpened = Math.floor(opened / hourSeconds);
       var hourClosed = Math.floor(closed / hourSeconds);
-      opened = opened - hourOpened * hourSeconds;
-      closed = closed - hourClosed * hourSeconds;
+      var opened = opened - hourOpened * hourSeconds;
+      var closed = closed - hourClosed * hourSeconds;
 
       if (hourOpened === hourClosed) {
         day[hourOpened] += (opened - closed) / hourSeconds;

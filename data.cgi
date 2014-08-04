@@ -5,22 +5,38 @@ UNIX_WEEK_DEVIATION = 259200
 DAY_IN_WEEK = 7
 UTC_DEVIATION = 14400
 SEC_IN_WEEK = SEC_IN_DAY * DAY_IN_WEEK
-
-doorLogs = [line.split(',') for line in open('/afs/sipb/project/door/log','r').readlines() if all(['#' not in a for a in line])]
-if doorLogs[-1][0]=='1':
-  doorLogs.append(['0',time.time()])
+DEFAULT_WEEKS = 8
 
 # params is an object containing the start time and end time
 params = sys.stdin.read()
+
+f = open('/afs/sipb/project/door/log','r')
+
+# remove, add if not params, default params above
 if params:
   params = json.loads(params)
   startDate = params["startDate"]
   endDate = params["endDate"]
-  selectedDoorLogs=[]
-  for n in doorLogs:
-    if int(startDate)<=int(n[1])<=int(endDate):
-      selectedDoorLogs.append(n)
-  doorLogs = selectedDoorLogs[:]
+else:
+  startDate = time.time()-DEFAULT_WEEKS*SEC_IN_WEEK
+  endDate = time.time()
+
+selectedDoorLogs=[]
+while True:
+  line=f.readline().split(',')
+  if any(['#' in a for a in line]):
+    continue
+  if int(line[1])>=int(startDate):
+    break
+# for n in doorLogs:
+#   if int(startDate)<=int(n[1])<=int(endDate):
+#     selectedDoorLogs.append(n)
+for line in f:
+  selectedDoorLogs.append(line.split(','))
+doorLogs = selectedDoorLogs[:]
+
+if doorLogs[-1][0]=='1':
+  doorLogs.append(['0',time.time()])
 
 # Get the number of seconds since the most recent 
 # week start (midnight between Sat. and Sun.)
@@ -45,3 +61,5 @@ dump = map_relative_times(timeIntervals)
 
 print "Content-type: application/json\n"
 print json.dumps(dump)
+
+f.close()
