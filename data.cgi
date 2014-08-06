@@ -28,9 +28,6 @@ while True:
     continue
   if int(line[1])>=int(startDate):
     break
-# for n in doorLogs:
-#   if int(startDate)<=int(n[1])<=int(endDate):
-#     selectedDoorLogs.append(n)
 for line in f:
   selectedDoorLogs.append(line.split(','))
 doorLogs = selectedDoorLogs[:]
