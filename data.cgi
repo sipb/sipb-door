@@ -22,14 +22,13 @@ else:
   endDate = time.time()
 
 selectedDoorLogs=[]
-while True:
-  line=f.readline().split(',')
-  if any(['#' in a for a in line]):
-    continue
-  if int(line[1])>=int(startDate):
-    break
 for line in f:
-  selectedDoorLogs.append(line.split(','))
+  if '#' in line:
+    continue
+  nline=line.split(',')
+  if int(nline[1])<int(startDate):
+    continue
+  selectedDoorLogs.append(nline)
 doorLogs = selectedDoorLogs[:]
 
 if doorLogs[-1][0]=='1':
