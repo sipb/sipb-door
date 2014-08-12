@@ -276,8 +276,10 @@ function visualControl($scope, $filter, $http) {
 
       if (daysPassed[0] === daysPassed[1]) {
         updateHours(freq[dayMap[dayOpened]], residueOpened, residueClosed);
-      } else if (dayOpened < dayClosed) {
-        for (i = dayOpened; i <= dayClosed; ++i) {
+
+      // ASSUMPTION: door will not be open for longer than a week
+      } else {
+        for (i = dayOpened; i != (dayClosed + 1) % 7; i = ++i % 7) {
           day = freq[dayMap[i]];
           switch (i) {
             case dayOpened:
@@ -290,7 +292,7 @@ function visualControl($scope, $filter, $http) {
               updateHours(day, 0, daySeconds);
           }
         } 
-      } 
+      }
     }
 
     for (i = 0; i <= 6; i++) {
