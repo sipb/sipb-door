@@ -1,8 +1,8 @@
 /*
   NOTE! I'm doing this the wrong way! d3 should be included as a service
-  or a directive in Angular. I'm doing alot of DOM manipulation which
+  or a directive in Angular. Here I'm basically doing DOM manipulation which
   defeats the purpose of having Angular in the first place. Refactor if
-  we have the time.
+  we have the time!
 */
 
 // Angular module
@@ -208,7 +208,6 @@ function visualControl($scope, $filter, $http) {
           .attr("text-anchor", "middle")
           .attr("opacity", "0");
 
-      /*
       node.on("mouseover", function() {
           d3.select(this)
               .select("text")
@@ -228,7 +227,6 @@ function visualControl($scope, $filter, $http) {
               .delay(200)
               .attr("opacity", 1);
           });
-      */
 
       heats[i][hour] = node;
 
@@ -237,7 +235,7 @@ function visualControl($scope, $filter, $http) {
 
   // Update graphic given data tuples
   updateGraphic = function(data) {
-    var occurrence = (data[data.length-1][1] - data[0][0]) / weekSeconds;
+    var occurrence = Math.ceil((data[data.length-1][1] - data[0][0]) / weekSeconds);
     occurrence = Math.max(occurrence, 1);
 
     // Sets freq object to contain fraction of hours opened
@@ -245,12 +243,12 @@ function visualControl($scope, $filter, $http) {
       var i;
       var hourOpened = Math.floor(opened / hourSeconds);
       var hourClosed = Math.floor(closed / hourSeconds);
-      opened = opened - hourOpened * hourSeconds;
-      closed = closed - hourClosed * hourSeconds;
+      opened = opened % hourSeconds;
+      closed = closed % hourSeconds;
 
       if (hourOpened === hourClosed) {
-        day[hourOpened] += (opened - closed) / hourSeconds;
-      } else {
+        day[hourOpened] += (closed - opened) / hourSeconds;
+      } else if (hourOpened < hourClosed) {
         for (i = hourOpened; i <= hourClosed; i++) {
           switch (i) {
             case hourOpened:
@@ -266,20 +264,20 @@ function visualControl($scope, $filter, $http) {
       }
     };
 
-    for (j = 0; j < data.length; j++) {
+    for (j = 0; j < data.length; ++j) {
       tuple = data[j];
       daysPassed = tuple.map(function(t) {
         return Math.floor(t / daySeconds);
       });
-      residueOpened = tuple[0] - daysPassed[0] * daySeconds;
-      residueClosed = tuple[1] - daysPassed[1] * daySeconds;
+      residueOpened = tuple[0] % daySeconds;
+      residueClosed = tuple[1] % daySeconds;
       dayOpened = daysPassed[0] % 7;
       dayClosed = daysPassed[1] % 7;
 
       if (daysPassed[0] === daysPassed[1]) {
         updateHours(freq[dayMap[dayOpened]], residueOpened, residueClosed);
-      } else {
-        for (i = dayOpened; dayOpened < dayClosed ? i <= dayClosed : i >= dayClosed; dayOpened < dayClosed ? ++i : --i) {
+      } else if (dayOpened < dayClosed) {
+        for (i = dayOpened; i <= dayClosed; ++i) {
           day = freq[dayMap[i]];
           switch (i) {
             case dayOpened:
@@ -289,9 +287,7 @@ function visualControl($scope, $filter, $http) {
               updateHours(day, 0, residueClosed);
               break;
             default:
-              if (dayClosed > dayOpened) {
-                updateHours(day, 0, daySeconds);
-              }
+              updateHours(day, 0, daySeconds);
           }
         } 
       } 
