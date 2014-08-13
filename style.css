@@ -33,7 +33,8 @@ div.ball img {
 }
 
 div.ball .play {
-  padding-top: 70px;
+  cursor: pointer;
+  padding: 70px 0px;
   font-size: 50px;
   text-align: center;
 }
