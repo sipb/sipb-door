@@ -305,7 +305,7 @@ function visualControl($scope, $filter, $http) {
         lightness = (1 - frac) * 100;
         
         heats[i][hour].select("rect").transition().style("fill", "hsl(" + hue + ", 50%," + lightness + "%)").duration(1000).delay( i * 120 + Number(hour) * 10);
-        heats[i][hour].select("text").text(Math.round(frac*100));
+        heats[i][hour].select("text").text(Math.round(frac*100) + '%');
       }
     }
   }
