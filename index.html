@@ -8,32 +8,32 @@ Ray Hua Wu <dzaefn@mit.edu>
 Ong Ming Yang <me@ongmingyang.com>
 
 -->
-<html ng-app="heatApp">
+<html data-ng-app="heatApp">
 <head>
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-<meta content="utf-8" http-equiv="encoding">
+<title>SIPB Door</title>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="script.js"></script>
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body ng-controller="visualControl">
-  <div id="fun" ng-controller="funStuff">
-    <div ng-class="whee ? 'ball spin' : 'ball'">
-      <img src="http://sipb-door.scripts.mit.edu/widget-3d/door.sh" />
+<body data-ng-controller="visualControl">
+  <div id="fun" data-ng-controller="funStuff">
+    <div data-ng-class="whee ? 'ball spin' : 'ball'">
+      <img src="http://sipb-door.scripts.mit.edu/widget-3d/door.sh" alt="" />
     </div>
-    <div class="ball" ng-click="toggleSpin()">
+    <div class="ball" data-ng-click="toggleSpin()">
       <div class="play">
        {{ whee ? '&#x025FC;' : '&#x25b6;' }}
       </div>
     </div>
   </div>
-  <form ng-submit="processForm()">
-  <h2>Heat map of open door probability <span ng-if="headerData.startDate && headerData.endDate">({{ headerData.startDate | date : mediumDate }} to {{ headerData.endDate | date : mediumDate }})</span></h2>
-    <input type="date" ng-model="formData.startDate" placeholder="Start Date (mm/dd/yyyy)" />
-    <input type="date" ng-model="formData.endDate" placeholder="End Date (mm/dd/yyyy)" />
+  <form data-ng-submit="processForm()">
+  <h2>Heat map of open door probability <span data-ng-if="headerData.startDate && headerData.endDate">({{ headerData.startDate | date : mediumDate }} to {{ headerData.endDate | date : mediumDate }})</span></h2>
+    <input type="date" data-ng-model="formData.startDate" data-placeholder="Start Date (mm/dd/yyyy)" />
+    <input type="date" data-ng-model="formData.endDate" data-placeholder="End Date (mm/dd/yyyy)" />
     <input type="submit" />
-    <span ng-show="message" ng-class="{ 'has-error' : error }">{{ message }}</span>
+    <span data-ng-show="message" data-ng-class="{ 'has-error' : error }">{{ message }}</span>
   </form>
 </body>
 </html>
