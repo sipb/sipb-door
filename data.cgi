@@ -53,7 +53,11 @@ if doorLogs[0][0]=="0":
   doorLogs=doorLogs[1:] # removes first line if it's a closed line
 doorIntervals = [(doorLogs[2*n],doorLogs[2*n+1]) for n in range(len(doorLogs)/2)] # full lines from file
 timeIntervals = [(int(line[0][1]),int(line[1][1])) for line in doorIntervals]
-dump = map_relative_times(timeIntervals)
+dump = {
+  'startDate': startDate,
+  'endDate': endDate,
+  'intervals': map_relative_times(timeIntervals),
+}
 
 print "Content-type: application/json\n"
 print json.dumps(dump)

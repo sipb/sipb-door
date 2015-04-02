@@ -76,7 +76,7 @@ function visualControl($scope, $filter, $http) {
   // Form functions
   $scope.processForm = function() {
     d = $scope.formData;
-    if (!(d.startDate || d.endDate)) { 
+    if (!d.startDate || !d.endDate) {
       $scope.message = "Invalid date formats! Need to set both dates!";
     } else {
       // Convert to Unixtime without affecting original object
@@ -95,12 +95,6 @@ function visualControl($scope, $filter, $http) {
         })
           .success(function(data) {
             resetHeats();
-
-            // display FROM and TO data only after data is received
-            $scope.headerData = {
-              startDate: d.startDate,
-              endDate  : d.endDate
-            }
 
             updateGraphic(data);
             $scope.message = "Got data!"
@@ -235,7 +229,12 @@ function visualControl($scope, $filter, $http) {
 
   // Update graphic given data tuples
   updateGraphic = function(data) {
-    var occurrence = Math.ceil((data[data.length-1][1] - data[0][0]) / weekSeconds);
+    $scope.headerData = {
+      startDate: data.startDate * 1000,
+      endDate: data.endDate * 1000,
+    };
+
+    var occurrence = Math.ceil((data.intervals[data.intervals.length-1][1] - data.intervals[0][0]) / weekSeconds);
     occurrence = Math.max(occurrence, 1);
 
     // Sets freq object to contain fraction of hours opened
@@ -264,8 +263,8 @@ function visualControl($scope, $filter, $http) {
       }
     };
 
-    for (j = 0; j < data.length; ++j) {
-      tuple = data[j];
+    for (j = 0; j < data.intervals.length; ++j) {
+      tuple = data.intervals[j];
       daysPassed = tuple.map(function(t) {
         return Math.floor(t / daySeconds);
       });
