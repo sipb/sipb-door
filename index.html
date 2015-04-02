@@ -30,8 +30,8 @@ Ong Ming Yang <me@ongmingyang.com>
   </div>
   <form data-ng-submit="processForm()">
   <h2>Heat map of open door probability <span data-ng-if="headerData.startDate && headerData.endDate">({{ headerData.startDate | date : mediumDate }} to {{ headerData.endDate | date : mediumDate }})</span></h2>
-    <input type="date" data-ng-model="formData.startDate" data-placeholder="Start Date (mm/dd/yyyy)" />
-    <input type="date" data-ng-model="formData.endDate" data-placeholder="End Date (mm/dd/yyyy)" />
+    <input type="date" data-ng-model="formData.startDate" placeholder="Start Date (mm/dd/yyyy)" />
+    <input type="date" data-ng-model="formData.endDate" placeholder="End Date (mm/dd/yyyy)" />
     <input type="submit" />
     <span data-ng-show="message" data-ng-class="{ 'has-error' : error }">{{ message }}</span>
   </form>
