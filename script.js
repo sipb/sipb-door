@@ -76,7 +76,7 @@ function visualControl($scope, $filter, $http) {
   // Form functions
   $scope.processForm = function() {
     d = $scope.formData;
-    if (!(d.startDate || d.endDate)) { 
+    if (!d.startDate || !d.endDate) {
       $scope.message = "Invalid date formats! Need to set both dates!";
     } else {
       // Convert to Unixtime without affecting original object
