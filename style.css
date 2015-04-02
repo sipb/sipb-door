@@ -9,6 +9,25 @@ svg {
   background-color: #fff;
 }
 
+text {
+  text-anchor: middle;
+  z-index: -1;
+}
+
+g:hover > text {
+  opacity: 1;
+}
+
+g:not(:hover) > text, g:not(:hover) > rect {
+  transition-property: opacity;
+  transition-duration: 1s;
+  transition-delay: 1s;
+}
+
+g:hover > rect {
+  opacity: 0;
+}
+
 form {
   padding-left: 50px;
   background-color: #fff;

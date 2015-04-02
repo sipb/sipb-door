@@ -117,7 +117,6 @@ function visualControl($scope, $filter, $http) {
     text = svgContainer.append("text")
         .attr("x", 25)
         .attr("y", 63 + i * 20)
-        .style("text-anchor", "middle")
         .text(i + "h");
   }
 
@@ -158,13 +157,11 @@ function visualControl($scope, $filter, $http) {
   svgContainer.append("text")
       .attr("x", 65)
       .attr("y", 574)
-      .style("text-anchor", "middle")
       .text("0%");
 
   svgContainer.append("text")
       .attr("x", 620)
       .attr("y", 574)
-      .style("text-anchor", "middle")
       .text("100%");
 
   // Display labels
@@ -175,7 +172,6 @@ function visualControl($scope, $filter, $http) {
     text = svgContainer.append("text")
         .attr("x", 100 + x)
         .attr("y", 40)
-        .style("text-anchor", "middle")
         .text(dayMap[i])
 
     for (hour in dayFreq) {
@@ -199,28 +195,7 @@ function visualControl($scope, $filter, $http) {
       node.append("text")
           .attr("x", 50)
           .attr("y", 14)
-          .attr("text-anchor", "middle")
           .attr("opacity", "0");
-
-      node.on("mouseover", function() {
-          d3.select(this)
-              .select("text")
-              .attr("opacity", 1);
-          d3.select(this)
-              .select("rect")
-              .attr("opacity", 0);
-          }).on("mouseout", function() {
-          d3.select(this)
-              .select("text")
-              .transition()
-              .delay(200)
-              .attr("opacity", 0);
-          d3.select(this)
-              .select("rect")
-              .transition()
-              .delay(200)
-              .attr("opacity", 1);
-          });
 
       heats[i][hour] = node;
 
@@ -303,7 +278,7 @@ function visualControl($scope, $filter, $http) {
         hue = 24 * frac;
         lightness = (1 - frac) * 100;
         
-        heats[i][hour].select("rect").transition().style("fill", "hsl(" + hue + ", 50%," + lightness + "%)").duration(1000).delay( i * 120 + Number(hour) * 10);
+        heats[i][hour].select("rect").transition().style("fill", "hsl(" + hue + ", 50%," + lightness + "%)").duration(1000).delay( i * 60 + Number(hour) * 5);
         heats[i][hour].select("text").text(Math.round(frac*100) + '%');
       }
     }
