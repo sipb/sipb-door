@@ -26,6 +26,8 @@ for line in f:
   if '#' in line:
     continue
   nline=line.split(',')
+  if int(nline[1]) > int(endDate):
+    break
   if int(nline[1])<int(startDate):
     continue
   selectedDoorLogs.append(nline)
