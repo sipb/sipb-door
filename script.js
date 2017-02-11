@@ -83,6 +83,7 @@ function visualControl($scope, $filter, $http) {
       r = {};
       r.startDate = Date.parse($filter('date')(d.startDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000;
       r.endDate = Date.parse($filter('date')(d.endDate, 'dd/MMM/yyyy HH:mm:ss')) / 1000;
+      r.endDate += daySeconds; // Capture entire day
       if (r.startDate >= r.endDate) {
         $scope.message = "Invalid dates! The first date should be before the second date!";
       } else {
